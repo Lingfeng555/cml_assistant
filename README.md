@@ -132,7 +132,3 @@ pip install -r requirements.txt
 3. Select a generator (`ClassifierGenerator`, `RegressionGenerator`, etc.) to create models.
 4. Evaluate your results with `evaluator`.
 5. Save outputs for documentation.
-
----
-
-Let me know if you'd like to modify or expand this README!
