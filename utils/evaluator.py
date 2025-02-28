@@ -116,7 +116,7 @@ class Evaluator:
         return adjusted_r2
     
     @staticmethod
-    def regression_error_distribution(y_pred: np.array, y_true: np.array,  bins: int, plot:bool):
+    def regression_error_distribution(y_pred: np.array, y_true: np.array,  bins: int, plot:bool, precision: int = 4):
         lower_limit = min(y_true)
         upper_limit = max(y_true)
 
@@ -133,14 +133,14 @@ class Evaluator:
                 continue
             
             mean, variance, std_dev = Evaluator.calculate_statistics(errors)
-            result["mean"].append(mean)
-            result["variance"].append(variance)
-            result["std_dev"].append(std_dev)
+            result["mean"].append(round(mean, precision))
+            result["variance"].append(round(variance, precision))
+            result["std_dev"].append(round(std_dev, precision))
             
-            result["max_error"].append(np.max(errors))
-            result["min_error"].append(np.min(errors))
+            result["max_error"].append(round(np.max(errors), precision))
+            result["min_error"].append(round(np.min(errors), precision))
 
-            result["bin_label"].append(f"({bin_depth*i}, {bin_depth*(i-1)}]")
+            result["bin_label"].append(f"({round(bin_depth*(i-1), precision)}, {round(bin_depth*i, precision)}]")
             result["n_sample"].append(np.size(errors))
 
         result = pd.DataFrame(result)
@@ -180,7 +180,7 @@ class Evaluator:
         plt.show()
 
     @staticmethod
-    def eval_regression(y_pred:np.array, y_true:np.array, plot: bool = True, bins: int = 5, n_features:int = None, regressor_name: str = None):
+    def eval_regression(y_pred:np.array, y_true:np.array, plot: bool = True, bins: int = 5, n_features:int = None, regressor_name: str = None, precision: int = 4):
         """
         Evaluates regression model performance using common metrics.
 
@@ -191,6 +191,7 @@ class Evaluator:
             bins (int): Number of bins for the error distribution plot. Default is 5.
             n_features (int): Number of features in the model (for adjusted R²). Optional.
             regressor_name (str): Name of the regressor for logging results. Optional.
+            precision (int): Number of decimal places for rounding. Default is 4.
 
         Metrics:
             - MAE, MSE, RMSE, R², Adjusted R² (if `n_features` is provided), MAPE.
@@ -223,7 +224,7 @@ class Evaluator:
         if (regressor_name != None):
             Evaluator.register_regression(regressor_name, mae, mse, r2, mape, mean, std_dev, r2_adjusted)
         
-        return Evaluator.regression_error_distribution(y_pred, y_true,  bins = bins, plot = plot)
+        return Evaluator.regression_error_distribution(y_pred, y_true,  bins = bins, plot = plot, precision = precision)
 
     @staticmethod
     def register_regression(regressor_name, mae, mse, r2, mape, mean, std_dev, r2_adjusted):
